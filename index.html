@@ -378,7 +378,7 @@
     function showResult() {
         quizScreen.classList.add("hidden");
         resultScreen.classList.remove("hidden");
-        resultEl.textContent = `You scored ${score} out of ${quizData.length}! 🚀`;
+        resultEl.textContent = `You answered ${score} out of ${quizData.length} questions! 🚀`;
 
         const resultImage = document.getElementById("result-image");
         const percentage = (score / quizData.length) * 100;
