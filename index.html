@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Boundless Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+    /* Your full CSS here */
+    #bg-image {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://beboundless.xyz/webp/caustic-bg.webp");
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.5);
+        z-index: -1;
+    }
+    /* Body with animated gradient background */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(120deg, #a1a09b,#abaaa0, #cdcdc6, #c4c5ca);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+        color: #000000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        position: relative;
+    }
+    /* ChatGPT-style animated gradient */
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    /* Logo faint in background with slow pulse + rotate */
+    body::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(0deg);
+        background: url("static/4Nt6GIFd_400x400-removebg-preview.png") no-repeat center;
+        background-size: 200px;
+        opacity: 0.06;
+        width: 300px;
+        height: 300px;
+        pointer-events: none;
+        animation: logoPulse 6s ease-in-out infinite, logoRotate 40s linear infinite;
+    }
+    /* Logo animations */
+    @keyframes logoPulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.06; }
+        50% { transform: translate(-50%, -50%) scale(1.05) rotate(0deg); opacity: 0.1; }
+    }
+    @keyframes logoRotate {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    /* Quiz container */
+    .quiz-container {
+        position: relative;
+        background: rgb(177, 160, 176, 0.85);
+        padding: 30px;
+        border-radius: 20px;
+        width: 600px;
+        box-shadow: 0 0 20px rgba(255, 179, 204, 0.3);
+        text-align: center;
+        border: 2px solid transparent;
+        animation: fadeIn 1s ease forwards, borderGlow 4s linear infinite;
+        z-index: 1;
+    }
+    /* Title gradient animation */
+    .title {
+        background: linear-gradient(90deg, #FFCC99, #CCE5FF, #FFE599);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 600;
+        margin-bottom: 20px;
+        animation: gradientMove 5s ease infinite;
+    }
+    /* Question animation */
+    #question {
+        font-size: 18px;
+        margin-bottom: 20px;
+        animation: slideIn 0.8s ease forwards;
+    }
+    /* Options with hover glow */
+    .option-btn {
+        display: block;
+        background: linear-gradient(90deg, #d5d8dc, #d5d9dd);
+        color: #171717;
+        border: 1px solid rgba(255, 229, 153, 0.3);
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: optionFadeIn 0.5s ease forwards;
+    }
+    .option-btn:hover {
+        background: linear-gradient(90deg, #CCE5FF, #FFCC99);
+        box-shadow: 0 0 10px #CCE5FF, 0 0 20px #FFCC99;
+    }
+    /* Buttons with pulse animation */
+    .btn {
+        background: linear-gradient(90deg, #FFE599, #FFB3CC);
+        border: none;
+        padding: 12px 20px;
+        margin-top: 15px;
+        border-radius: 10px;
+        color: #121111;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 0 10px rgba(255, 204, 153, 0.4);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        animation: pulse 2s infinite;
+    }
+    .btn:hover {
+        box-shadow: 0 0 20px rgba(255, 204, 153, 0.8), 0 0 40px rgba(255, 229, 153, 0.8);
+    }
+    /* Result text animation */
+    #result {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        background: linear-gradient(90deg, #FFCC99, #FFE599, #CCE5FF);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 5s ease infinite;
+    }
+    /* Hidden utility */
+    .hidden {
+        display: none;
+    }
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 10px rgb(255, 179, 204, 0.4); }
+        50% { box-shadow: 0 0 20px rgba(255, 204, 153, 0.8); }
+    }
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    @keyframes borderGlow {
+        0% { border-color: #FFCC99; }
+        50% { border-color: #FFE599; }
+        100% { border-color: #CCE5FF; }
+    }
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes optionFadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .correct {
+        background: linear-gradient(90deg, #b6f7b6, #7be87b) !important;
+        color: #000;
+    }
+    .wrong {
+        background: linear-gradient(90deg, #ffb3b3, #ff6666) !important;
+        color: #fff;
+    }
+</style>
+</head>
+<body>
+    <div id="bg-image"></div>
+    <div class="quiz-container">
+        <h1 class="title">
+  <img src="https://i.postimg.cc/MKjPyhsp/4-Nt6-GIFd-400x400-removebg-preview.png" alt="Boundless Logo" class="logo" />
+  Boundless Quiz
+</h1>
+
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <p>Test your Boundless knowledge 🚀</p>
+            <button id="start-btn" class="btn">Start Quiz</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div id="progress-container" class="hidden" style="width: 100%; background-color: #ddd; border-radius: 5px; height: 12px; margin-bottom: 20px;">
+                <div id="progress-bar" style="width: 0%; height: 100%; background-color: #4CAF50; border-radius: 5px; transition: width 0.3s ease;"></div>
+            </div>
+            <p id="question"></p>
+            <div id="options"></div>
+            <button id="next-btn" class="btn hidden">Next</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <p id="result"></p>
+            <img id="result-image" src="" alt="Result Image" style="max-width: 300px; display: block; margin: 20px auto;" />
+            <a id="share-btn" href="#" target="_blank" rel="noopener" class="btn" style="text-decoration:none;">Share on Twitter</a>
+        </div>
+    </div>
+
+<script>
+    // Embedded quiz data
+    const quizData = [
+        {
+            question: "Which organization is behind the development of Boundless?",
+            options: ["Ethereum Foundation", "RISC Zero", "StarkWare", "Chainlink Labs"],
+            answer: "RISC Zero"
+        },
+        {
+            question: "What role do ‘provers’ play in Boundless?",
+            options: ["Write smart contracts", "Generate zero-knowledge proofs", "Validate wallets", "Issue tokens"],
+            answer: "Generate zero-knowledge proofs"
+        },
+        {
+            question: "Boundless can connect proof verification to:",
+            options: ["One chain only", "Any blockchain", "Only Ethereum L2s", "Only Cosmos chains"],
+            answer: "Any blockchain"
+        },
+        {
+            question: "What is OP Kailua?",
+            options: ["Layer-1 chain", "Hybrid ZK solution for optimistic rollups", "Stablecoin protocol", "PoW mining pool"],
+            answer: "Hybrid ZK solution for optimistic rollups"
+        },
+        {
+            question: "Boundless enables cross-chain communication via partnership with:",
+            options: ["Wormhole", "Union", "Arbitrum", "Chainlink"],
+            answer: "Union"
+        },
+        {
+            question: "Boundless allows developers to write proof logic in which languages?",
+            options: ["Solidity or Rust", "C++ only", "Python only", "JavaScript only"],
+            answer: "Solidity or Rust"
+        },
+        {
+            question: "Which part of the Boundless architecture would handle translating a WASM execution trace into a proof circuit?",
+            options: ["Executor Layer", "zkVM Compiler", "Prover Marketplace Relay", "Validator Contract"],
+            answer: "zkVM Compiler"
+        },
+        {
+            question: "Which mechanism does Boundless use to reward provers?",
+            options: ["Proof of Stake", "Proof of Burn", "Proof of Verifiable Work (PoVW)", "Proof of Authority"],
+            answer: "Proof of Verifiable Work (PoVW)"
+        },
+        {
+            question: "Which cryptographic proof system underlies Boundless’s zkVM?",
+            options: ["STARKs", "SNARKs", "RISC-based STARKs with recursion", "Bulletproofs"],
+            answer: "RISC-based STARKs with recursion"
+        },
+        {
+            question: "What is Boundless Steel?",
+            options: ["zkVM debugger", "L2 rollup protocol", "ZK coprocessor for EVM execution", "NFT data oracle"],
+            answer: "ZK coprocessor for EVM execution"
+        },
+        {
+            question: "In Boundless Steel, how are EVM opcodes executed for proof generation?",
+            options: ["Translated into LLVM IR before zk execution", "Directly executed on Ethereum nodes", "Emulated on WASM without verification", "Converted into Tendermint transactions"],
+            answer: "Translated into LLVM IR before zk execution"
+        },
+        {
+            question: "Why does Boundless use recursion in ZK proofs?",
+            options: ["To bypass EVM gas limits", "To compress multiple proofs into a single verifiable proof", "To parallelize transaction execution", "To encrypt proof data"],
+            answer: "To compress multiple proofs into a single verifiable proof"
+        },
+        {
+            question: "Which part of the Boundless architecture would handle translating a WASM execution trace into a proof circuit?",
+            options: ["Executor Layer", "zkVM Compiler", "Prover Marketplace Relay", "Validator Contract"],
+            answer: "zkVM Compiler"
+        },
+        {
+            question: "The VM (Virtual Machine) that powers the Boundless proofs is",
+            options: ["R0VM", "RETH", "EVM", "SVM"],
+            answer: "R0VM"
+        },
+        {
+            question: "What hardware does Boundless support for faster proving?",
+            options: ["NVIDIA GPUS", "ASIC miners", "FPGA boards", "ARM-based SBCs"],
+            answer: "NVIDIA GPUS"
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    // Elements
+    const startScreen = document.getElementById("start-screen");
+    const quizScreen = document.getElementById("quiz-screen");
+    const resultScreen = document.getElementById("result-screen");
+    const startBtn = document.getElementById("start-btn");
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const resultEl = document.getElementById("result");
+    const shareBtn = document.getElementById("share-btn");
+    const progressBar = document.getElementById("progress-bar");
+    const progressContainer = document.getElementById("progress-container");
+
+    startBtn.addEventListener("click", () => {
+        startScreen.classList.add("hidden");
+        quizScreen.classList.remove("hidden");
+        progressContainer.classList.remove("hidden");
+        loadQuestion();
+        updateProgressBar();
+        nextBtn.classList.add("hidden");
+    });
+
+    function loadQuestion() {
+        const q = quizData[currentQuestion];
+        questionEl.textContent = q.question;
+        optionsEl.innerHTML = "";
+
+        q.options.forEach((option, idx) => {
+            let btn = document.createElement("button");
+            btn.textContent = option;
+            btn.classList.add("option-btn");
+            // Stagger animation delay for fade-in
+            btn.style.animationDelay = (idx * 0.1) + "s";
+            btn.disabled = false;
+            btn.onclick = () => checkAnswer(btn, option);
+            optionsEl.appendChild(btn);
+        });
+
+        nextBtn.classList.add("hidden");
+    }
+
+    function checkAnswer(button, selected) {
+        let correctAnswer = quizData[currentQuestion].answer;
+
+        // Disable all option buttons
+        Array.from(optionsEl.children).forEach(btn => {
+            btn.disabled = true;
+        });
+
+        if (selected === correctAnswer) {
+            button.classList.add("correct");
+            score++;
+        } else {
+            button.classList.add("wrong");
+            // Highlight correct answer
+            Array.from(optionsEl.children).forEach(btn => {
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add("correct");
+                }
+            });
+        }
+
+        nextBtn.classList.remove("hidden");
+    }
+
+    nextBtn.addEventListener("click", () => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+            updateProgressBar();
+        } else {
+            updateProgressBar();
+            showResult();
+        }
+    });
+
+    function updateProgressBar() {
+        let progress = ((currentQuestion) / quizData.length) * 100;
+        progressBar.style.width = progress + "%";
+    }
+
+    function showResult() {
+        quizScreen.classList.add("hidden");
+        resultScreen.classList.remove("hidden");
+        resultEl.textContent = `You scored ${score} out of ${quizData.length}! 🚀`;
+
+        const resultImage = document.getElementById("result-image");
+        const percentage = (score / quizData.length) * 100;
+
+        // Use some sample images or placeholders for now
+        if (percentage >= 80) {
+            resultImage.src = "https://i.postimg.cc/63kRw1CM/Chat-GPT-Image-Aug-9-2025-06-01-04-PM-removebg-preview.png"; // perfect
+        } else if (percentage >= 50) {
+            resultImage.src = "https://i.postimg.cc/CMbnk7GV/Chat-GPT-Image-Aug-9-2025-06-01-20-PM-removebg-preview.png"; // good
+        } else {
+            resultImage.src = "https://i.postimg.cc/x8VkBNS7/Chat-GPT-Image-Aug-9-2025-06-01-17-PM-removebg-preview.png"; // low
+        }
+
+        let tweetText = encodeURIComponent(`I scored ${score}/${quizData.length} in the Boundless Quiz! 🚀 How much you scored? @boundless_xyz`);
+        shareBtn.href = `https://twitter.com/intent/tweet?text=${tweetText}`;
+    }
+</script>
+</body>
+</html>
